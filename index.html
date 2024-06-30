@@ -36,15 +36,36 @@
         readonly
         placeholder="Results will appear here"
       ></textarea>
-      <label>
-        <input type="checkbox" id="filterCheckbox" checked /> Filter only
-        *.google.com/*
-      </label>
+
       <button onclick="startScan()">Start Scan</button>
       <button onclick="stopScan()">Stop Scan</button>
     </div>
 
     <script>
+      var whitelist = [
+        "google.com",
+        "youtube.com",
+        "amazon.com",
+        "gstatic.com",
+        "airbnb.com",
+        "leetcode.com",
+        "linkedin.com",
+        "gettyimages.com",
+        "canva.com",
+        "microsoft.com",
+        "spotify.com",
+        "trulia.com",
+        "gov.in",
+        ".gov",
+        "prospects.com",
+      ];
+      var blacklist = [
+        "sites.google.com",
+        "shorturl.at",
+        "mediafire.com",
+        "godaddysites.com",
+        "google.com/url",
+      ];
       window.SCAN_INT = 0;
       let scanning = false;
       let scannedUrls = [];
@@ -60,14 +81,14 @@
             const response = await fetchRedirect(randomShortUrl);
             const finalUrl = await response.text();
 
-            // Check if the filter checkbox is checked
-            const filter = document.getElementById("filterCheckbox").checked;
+            const isWhitelisted = whitelist.some((domain) =>
+              finalUrl.includes(domain)
+            );
+            const isBlacklisted = blacklist.some((domain) =>
+              finalUrl.includes(domain)
+            );
 
-            // Apply filter if checkbox is checked
-            if (
-              (filter && !finalUrl.includes("google.com")) ||
-              finalUrl.includes("sites.google.com")
-            ) {
+            if (isBlacklisted || !isWhitelisted) {
               console.log(`Filter blocked ${finalUrl}`);
               return;
             }
