@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Scanner</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"
+    />
+    <style>
+      body {
+        padding: 2rem;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      textarea {
+        width: 100%;
+        height: 200px;
+        margin-bottom: 1rem;
+      }
+      button {
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>URL Scanner</h2>
+      <p>Continuous scan of random URLs from shorturl.at</p>
+
+      <textarea
+        id="resultsTextarea"
+        readonly
+        placeholder="Results will appear here"
+      ></textarea>
+      <button onclick="startScan()">Start Scan</button>
+      <button onclick="stopScan()">Stop Scan</button>
+    </div>
+
+    <script>
+      let scanning = false;
+      let scannedUrls = [];
+
+      function startScan() {
+        if (scanning) return;
+        scanning = true;
+
+        // Generate random short URLs and fetch their final redirect URLs
+        const intervalId = setInterval(async () => {
+          const randomShortUrl = generateRandomShortUrl();
+          try {
+            const response = await fetchRedirect(randomShortUrl);
+            const finalUrl = response.url;
+
+            // Check if finalUrl contains "https://www.shorturl.at/"
+            if (!finalUrl.includes("https://www.shorturl.at/")) {
+              scannedUrls.push({ shortUrl: randomShortUrl, finalUrl });
+              updateResultsTextarea();
+            }
+          } catch (error) {
+            console.error(`Error fetching ${randomShortUrl}:`, error);
+          }
+
+          if (!scanning) clearInterval(intervalId); // Stop if scanning is stopped
+        }, 1000); // Adjust interval as needed (milliseconds)
+
+        function generateRandomShortUrl() {
+          const characters =
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+          let randomShortUrl = "https://shorturl.at/";
+          for (let i = 0; i < 5; i++) {
+            randomShortUrl += characters.charAt(
+              Math.floor(Math.random() * characters.length)
+            );
+          }
+          return randomShortUrl;
+        }
+      }
+
+      async function fetchRedirect(shortUrl) {
+        const url = `https://curler-two.vercel.app/redir?url="${encodeURIComponent(
+          shortUrl
+        )}"`;
+        const response = await fetch(url, { method: "GET" });
+        return response;
+      }
+
+      function stopScan() {
+        scanning = false;
+      }
+
+      function updateResultsTextarea() {
+        const resultsTextarea = document.getElementById("resultsTextarea");
+        resultsTextarea.value = scannedUrls
+          .map((url) => `${url.shortUrl},${url.finalUrl}`)
+          .join("\n");
+      }
+    </script>
+  </body>
+</html>
