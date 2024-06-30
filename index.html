@@ -31,6 +31,9 @@
         display: flex;
         justify-content: space-between;
       }
+      .whitelist-container {
+        margin: 1rem 0;
+      }
     </style>
   </head>
   <body>
@@ -61,6 +64,33 @@
 
       <button onclick="startScan()">Start Scan</button>
       <button onclick="stopScan()">Stop Scan</button>
+      <label>
+        <input
+          type="checkbox"
+          id="whitelist"
+          value="whitelist"
+          checked="true"
+        />
+        Enable whitelist
+      </label>
+      <div class="whitelist-container">
+        <label for="strictWhitelist">Choose a strict whitelist:</label>
+        <select id="strictWhitelist" onchange="updateStrictWhitelist()">
+          <option value="">None</option>
+          <option value="google">*.google.com</option>
+          <option value="documents">Docs</option>
+          <option value="sheets">Google sheets</option>
+          <option value="forms">Google forms</option>
+          <option value="docs">Google docs</option>
+          <option value="slides">Google slides</option>
+          <option value="youtube">Youtube</option>
+          <option value="media">Media</option>
+        </select>
+      </div>
+      <textarea
+        id="customWhitelistTextarea"
+        placeholder="Enter custom whitelist domains, one per line"
+      ></textarea>
     </div>
 
     <script>
@@ -87,7 +117,29 @@
         "bbc.co.uk",
         "weforum.org",
         "eventbrite.com",
+        "twitter.com",
+        "blogool.com",
+        "google.it",
+        "counseling.org",
+        "bark.com",
+        "bing.com",
       ];
+      var strictWhitelists = {
+        google: ["google.com"],
+        documents: ["docs.google.com"],
+        sheets: ["docs.google.com/spreadsheets"],
+        forms: ["docs.google.com/forms"],
+        docs: ["docs.google.com/document"],
+        slides: ["docs.google.com/presentation"],
+        youtube: ["youtube.com"],
+        media: [
+          "google.com",
+          "youtube.com",
+          "canva.com",
+          "spotify.com",
+          "facebook.com",
+        ],
+      };
       var blacklist = [
         "sites.google.com",
         "shorturl.at",
@@ -100,6 +152,7 @@
       window.SCAN_INT = 0;
       let scanning = false;
       let scannedUrls = [];
+      let whitelistEl = document.getElementById("whitelist");
 
       function startScan() {
         if (scanning) return;
@@ -112,9 +165,10 @@
             const response = await fetchRedirect(randomShortUrl);
             const finalUrl = await response.text();
 
-            const isWhitelisted = whitelist.some((domain) =>
-              finalUrl.includes(domain)
-            );
+            const currentWhitelist = getCurrentWhitelist();
+            const isWhitelisted =
+              currentWhitelist.some((domain) => finalUrl.includes(domain)) ||
+              !whitelistEl.checked;
             const isBlacklisted = blacklist.some((domain) =>
               finalUrl.includes(domain)
             );
@@ -168,6 +222,28 @@
       function updateScanInterval(value) {
         window.SCAN_INT = parseInt(value);
         document.getElementById("sliderValue").textContent = value;
+      }
+
+      function updateStrictWhitelist() {
+        const selectedStrictWhitelist =
+          document.getElementById("strictWhitelist").value;
+        const customWhitelistTextarea = document.getElementById(
+          "customWhitelistTextarea"
+        );
+        customWhitelistTextarea.value =
+          (selectedStrictWhitelist &&
+            strictWhitelists[selectedStrictWhitelist].join("\n")) ||
+          "";
+      }
+
+      function getCurrentWhitelist() {
+        const customWhitelistTextarea = document.getElementById(
+          "customWhitelistTextarea"
+        );
+        const customWhitelist = customWhitelistTextarea.value
+          .split("\n")
+          .filter((domain) => domain.trim() !== "");
+        return customWhitelist;
       }
     </script>
   </body>
