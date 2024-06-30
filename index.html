@@ -41,6 +41,7 @@
     </div>
 
     <script>
+      window.SCAN_INT = 0;
       let scanning = false;
       let scannedUrls = [];
 
@@ -65,7 +66,7 @@
           }
 
           if (!scanning) clearInterval(intervalId); // Stop if scanning is stopped
-        }, 100); // Adjust interval as needed (milliseconds)
+        }, window.SCAN_INT); // Adjust interval as needed (milliseconds)
 
         function generateRandomShortUrl() {
           const characters =
