@@ -24,6 +24,13 @@
       button {
         margin-top: 1rem;
       }
+      .slider-container {
+        margin: 1rem 0;
+      }
+      .slider-label {
+        display: flex;
+        justify-content: space-between;
+      }
     </style>
   </head>
   <body>
@@ -36,6 +43,21 @@
         readonly
         placeholder="Results will appear here"
       ></textarea>
+
+      <div class="slider-container">
+        <label for="scanIntervalSlider" class="slider-label">
+          <span>Scan Interval (ms):</span>
+          <span id="sliderValue">0</span>
+        </label>
+        <input
+          type="range"
+          id="scanIntervalSlider"
+          min="0"
+          max="500"
+          value="0"
+          oninput="updateScanInterval(this.value)"
+        />
+      </div>
 
       <button onclick="startScan()">Start Scan</button>
       <button onclick="stopScan()">Stop Scan</button>
@@ -141,6 +163,11 @@
         resultsTextarea.value = scannedUrls
           .map((url) => `${url.finalUrl}`)
           .join("\n");
+      }
+
+      function updateScanInterval(value) {
+        window.SCAN_INT = parseInt(value);
+        document.getElementById("sliderValue").textContent = value;
       }
     </script>
   </body>
