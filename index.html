@@ -53,7 +53,7 @@
           const randomShortUrl = generateRandomShortUrl();
           try {
             const response = await fetchRedirect(randomShortUrl);
-            const finalUrl = response.url;
+            const finalUrl = await response.text();
 
             // Check if finalUrl contains "https://www.shorturl.at/"
             if (!finalUrl.includes("https://www.shorturl.at/")) {
@@ -65,7 +65,7 @@
           }
 
           if (!scanning) clearInterval(intervalId); // Stop if scanning is stopped
-        }, 1000); // Adjust interval as needed (milliseconds)
+        }, 100); // Adjust interval as needed (milliseconds)
 
         function generateRandomShortUrl() {
           const characters =
@@ -76,14 +76,12 @@
               Math.floor(Math.random() * characters.length)
             );
           }
-          return randomShortUrl;
+          return randomShortUrl.substring(0, 25);
         }
       }
 
       async function fetchRedirect(shortUrl) {
-        const url = `https://curler-two.vercel.app/redir?url="${encodeURIComponent(
-          shortUrl
-        )}"`;
+        const url = `https://curler-two.vercel.app/redir?url="${shortUrl}"`;
         const response = await fetch(url, { method: "GET" });
         return response;
       }
