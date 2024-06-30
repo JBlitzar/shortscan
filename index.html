@@ -93,7 +93,7 @@
       function updateResultsTextarea() {
         const resultsTextarea = document.getElementById("resultsTextarea");
         resultsTextarea.value = scannedUrls
-          .map((url) => `${url.shortUrl},${url.finalUrl}`)
+          .map((url) => `${url.finalUrl}`)
           .join("\n");
       }
     </script>
