@@ -74,9 +74,10 @@
         Enable whitelist
       </label>
       <div class="whitelist-container">
-        <label for="strictWhitelist">Choose a strict whitelist:</label>
+        <label for="strictWhitelist">Choose a whitelist:</label>
         <select id="strictWhitelist" onchange="updateStrictWhitelist()">
           <option value="">None</option>
+          <option value="default">Default (lenient)</option>
           <option value="google">*.google.com</option>
           <option value="documents">Docs</option>
           <option value="sheets">Google sheets</option>
@@ -125,6 +126,36 @@
         "bing.com",
       ];
       var strictWhitelists = {
+        default: [
+          "google.com",
+          "youtube.com",
+          "amazon.com",
+          "gstatic.com",
+          "airbnb.com",
+          "leetcode.com",
+          "linkedin.com",
+          "gettyimages.com",
+          "canva.com",
+          "microsoft.com",
+          "spotify.com",
+          "trulia.com",
+          "gov.in",
+          ".gov",
+          "prospects.com",
+          "fiverr.com",
+          "freepik.com",
+          "facebook.com",
+          "yahoo.com",
+          "bbc.co.uk",
+          "weforum.org",
+          "eventbrite.com",
+          "twitter.com",
+          "blogool.com",
+          "google.it",
+          "counseling.org",
+          "bark.com",
+          "bing.com",
+        ],
         google: ["google.com"],
         documents: ["docs.google.com"],
         sheets: ["docs.google.com/spreadsheets"],
@@ -148,6 +179,7 @@
         "google.com/url",
         "accounts.google.com",
         "facebook.com/login",
+        "Error: HTTPSConnectionPool",
       ];
       window.SCAN_INT = 0;
       let scanning = false;
