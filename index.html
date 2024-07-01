@@ -80,6 +80,7 @@
           <option value="">None</option>
 
           <option value="google">*.google.com</option>
+          <option value="drive">Google drive</option>
           <option value="documents">Docs</option>
           <option value="sheets">Google sheets</option>
           <option value="forms">Google forms</option>
@@ -128,6 +129,7 @@
       ];
       var strictWhitelists = {
         default: whitelist,
+        drive: ["drive.google.com"],
         google: ["google.com"],
         documents: ["docs.google.com"],
         sheets: ["docs.google.com/spreadsheets"],
