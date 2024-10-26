@@ -12,9 +12,9 @@ generate_random_code() {
 # Function to perform HEAD request and follow redirects
 check_url() {
     local short_url="https://shorturl.at/$(generate_random_code)"
+
     # Perform a HEAD request with limited redirects and timeout
     final_url=$(curl -sIL -o /dev/null -w '%{url_effective}' --connect-timeout 5 --max-redirs 3 "$short_url")
-    echo "$final_url"
 
     # If the final URL does not contain "shorturl.at", print it
     if [[ "$final_url" != *"shorturl.at"* ]]; then
@@ -32,7 +32,7 @@ run_batch() {
 }
 
 
-num_batches=2
+num_batches=50
 
 
 for (( batch=1; batch<=num_batches; batch++ )); do
