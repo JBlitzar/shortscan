@@ -1,2 +1,3 @@
 # shortscan
- 
+
+`curl -fsSL `
